@@ -12,44 +12,41 @@
 
     <script src="js/jquery.min.js"></script>
     <script src="js/jcanvas.min.js"></script>
-    <script src="js/uitgangscode.js"></script>
+    <script src="js/snake.js"></script>
 
     <title>Snake - Mijn Spelletjessite</title>
 </head>
 <body>
-
-<header>
-    <div class="container">
-        <div class="sitetitle"><i class="fas fa-gamepad"></i> Mijn Spelletjessite</div>
-    </div>
-
-    <nav>
+    <header>
         <div class="container">
-            <ul>
-                <li><a href="index.html">Welkom</a></li>
-                <li><a href="snake.html" class="active">Snake</a></li>
-                <li><a href="#">Boter-kaas-eieren</a></li>
-                <li><a href="#">Sudoku</a></li>
-                <li><a href="#">Master mind</a></li>
-                <li><a href="#">Galgje</a></li>
-                <li><a href="#">Cryptogram</a></li>
-                <li class="inloggen"><a href="#"><i class="fas fa-sign-in-alt"></i> Inloggen</a></li>
-            </ul>
+            <div class="sitetitle"><i class="fas fa-gamepad"></i> Mijn Spelletjessite</div>
         </div>
-    </nav>
-</header>
 
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="index.html">Welkom</a></li>
+                    <li><a href="snake.html" class="active">Snake</a></li>
+                    <li><a href="#">Boter-kaas-eieren</a></li>
+                    <li><a href="#">Sudoku</a></li>
+                    <li><a href="#">Master mind</a></li>
+                    <li><a href="#">Galgje</a></li>
+                    <li><a href="#">Cryptogram</a></li>
+                    <li class="inloggen"><a href="#"><i class="fas fa-sign-in-alt"></i> Inloggen</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
-<main class="container">
-    <h1>Snake</h1>
+    <main class="container">
+        <h1>Snake</h1>
 
-    <div class="buttons" id="snakeButtons">
-        <button type="button" id="startSnake">Start</button>
-        <button type="button" id="stopSnake">Stop</button>
-    </div>
+        <div class="buttons" id="snakeButtons">
+            <button type="button" id="startSnake">Start</button>
+            <button type="button" id="stopSnake">Stop</button>
+        </div>
 
-    <canvas id="mySnakeCanvas" width="360" height="360"></canvas>
-</main>
-
+        <canvas id="mySnakeCanvas" width="360" height="360"></canvas>
+    </main>
 </body>
 </html>
