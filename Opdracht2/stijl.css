@@ -1,0 +1,107 @@
+/** Algemeen */
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    color: #202020;
+}
+.container {
+    max-width: 70em;
+    margin: 0 auto;
+}
+p {
+    font-size: 16px;
+}
+
+/** Header en navigatie */
+nav {
+    background: #404040;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+li {
+    float: left;
+}
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 1em 0.8em 0.75em 0.8em;
+    text-decoration: none;
+    font-size: 1.2em;
+    border-bottom: 0.25em solid #404040;
+    font-weight: 600;
+}
+li a:hover, .active {
+    background-color: #202020;
+    border-bottom-color: #329af0;
+}
+
+.sitetitle {
+    margin: 1.1em 0;
+    font-size: 2.2em;
+    font-weight: bold;
+    text-align: center;
+}
+.inloggen {
+    float: right;
+}
+.fa-gamepad {
+    color: #2a6fab;
+}
+.fa-sign-in-alt {
+    color: white;
+    margin-right: 0.25em;
+}
+
+/** Hoofdgedeelte */
+main {
+    padding: 1em 2em;
+    text-align: center;
+}
+canvas {
+    border: 1px solid #aaaaaa;
+}
+button {
+    border: 0;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    background: #329af0;
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    cursor: pointer;
+}
+button:hover {
+    background: #1a82d8;
+}
+
+button:active {
+    background: #0b70c3;
+}
+.buttons {
+    padding: 1em 0;
+}
+
+/** Responsive
+ * Maakt het menu ook toegankelijk op kleine schermen en
+ * schaalt ook het canvas-element mee.
+ */
+@media only screen and (max-width: 30em) {
+    li, .inloggen {
+        float: none;
+    }
+    canvas {
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
