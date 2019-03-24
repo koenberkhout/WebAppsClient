@@ -1,7 +1,7 @@
 var assert = chai.assert;
 
 describe("Tests voor snake.js", function () {
-    describe("Functie collidesWithOneOf", function () {
+    describe("Functie collidesWithOneOf()", function () {
         var myElements = [
             createSegment(40, 40),
             createSegment(40, 60),
@@ -14,6 +14,11 @@ describe("Tests voor snake.js", function () {
         it("'Dit' element wel in elements", function () {
             var myElement = createSegment(40, 60);
             assert.isTrue(myElement.collidesWithOneOf(myElements));
+        });
+        it("Test met een lege array", function () {
+            var emptyArray = [];
+            var myElement = createSegment(40, 60);
+            assert.isFalse(myElement.collidesWithOneOf(emptyArray));
         });
     });
 });
