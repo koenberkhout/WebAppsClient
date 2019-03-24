@@ -1,29 +1,29 @@
 const R        = 10,           // straal van een element
-      STEP     = 2*R,          // stapgrootte
-      WIDTH    = 360,          // breedte veld
-      HEIGHT   = 360,          // hoogte veld
-                               // er moet gelden: WIDTH = HEIGHT
-      MAX      = WIDTH/STEP-1, // netto veldbreedte
-      LEFT     = "left",       // bewegingsrichtingen
-      RIGHT    = "right",
-      UP       = "up",
-      DOWN     = "down",
+    STEP     = 2*R,          // stapgrootte
+    WIDTH    = 360,          // breedte veld
+    HEIGHT   = 360,          // hoogte veld
+                             // er moet gelden: WIDTH = HEIGHT
+    MAX      = WIDTH/STEP-1, // netto veldbreedte
+    LEFT     = "left",       // bewegingsrichtingen
+    RIGHT    = "right",
+    UP       = "up",
+    DOWN     = "down",
 
-      NUMFOODS = 15,           // aantal voedselelementen
+    NUMFOODS = 15,           // aantal voedselelementen
 
-      XMIN     = R,            // minimale x waarde
-      YMIN     = R,            // minimale y waarde
-      XMAX     = WIDTH - R,    // maximale x waarde
-      YMAX     = HEIGHT - R,   // maximale y waarde
+    XMIN     = R,            // minimale x waarde
+    YMIN     = R,            // minimale y waarde
+    XMAX     = WIDTH - R,    // maximale x waarde
+    YMAX     = HEIGHT - R,   // maximale y waarde
 
-      SNAKE   = "DarkRed" ,    // kleur van een slangsegment
-      FOOD    = "Olive",       // kleur van voedsel
-      HEAD    = "DarkOrange";  // kleur van de kop van de slang
+    SNAKE   = "DarkRed" ,    // kleur van een slangsegment
+    FOOD    = "Olive",       // kleur van voedsel
+    HEAD    = "DarkOrange";  // kleur van de kop van de slang
 
 var snake,
     foods = [];                // voedsel voor de slang
 
-$(document).ready(function() {
+$(document).ready(function () {
     $("#startSnake").click(init);
     $("#stopSnake").click(stop);
 });
@@ -33,7 +33,7 @@ $(document).ready(function() {
  * @function init
  * @description Haal eventueel bestaand voedsel en een bestaande slang weg,
  * creëer een slang, genereer voedsel, en teken alles
-*/
+ */
 function init() {
     snake = undefined;
     foods = [];
@@ -45,7 +45,7 @@ function init() {
 /**
  * @function stop
  * @description Laat slang en voedsel verdwijnen, en teken leeg veld
-*/
+ */
 function stop() {
     snake = undefined;
     foods = [];
@@ -56,13 +56,12 @@ function stop() {
  * @function move
  * @description Beweeg slang in aangegeven richting tenzij slang uit het canvas zou verdwijnen
  * @param {string} direction de richting (een van de constanten UP, DOWN, LEFT of RIGHT)
-*/
+ */
 function move(direction) {
     if (snake.canMove(direction)) {
         snake.doMove(direction);
         draw();
-    }
-    else {
+    } else {
         console.log("snake cannot move " + direction);
     }
 }
@@ -70,13 +69,13 @@ function move(direction) {
 /**
  * @function draw
  * @description Teken de slang en het voedsel op het canvas
-*/
+ */
 function draw() {
     var canvas = $("#mySnakeCanvas").clearCanvas();
-    snake.segments.forEach(function(e) {
+    snake.segments.forEach(function (e) {
         drawElement(e, canvas);
     });
-    foods.forEach(function(e) {
+    foods.forEach(function (e) {
         drawElement(e, canvas);
     });
 }
@@ -85,7 +84,7 @@ function draw() {
  * @constructor Snake
  * @param {Element[]} segments een array met aaneengesloten slangsegmenten.
  * Het laatste element van segments wordt de kop van de slang.
-*/
+ */
 function Snake(segments) {
     var head = segments[segments.length - 1];
     head.color = HEAD;
@@ -101,7 +100,7 @@ function Snake(segments) {
  * {@link https://softwareengineering.stackexchange.com/questions/118703/where-did-the-notion-of-one-return-only-come-from#answer-118793}
  * @global
  */
-Snake.prototype.canMove = function(direction) {
+Snake.prototype.canMove = function (direction) {
     var segments = this.segments;
     var head = segments[segments.length - 1];
     switch (direction) {
@@ -123,7 +122,7 @@ Snake.prototype.canMove = function(direction) {
  * @param {string} direction de richting
  * @global
  */
-Snake.prototype.doMove = function(direction) {
+Snake.prototype.doMove = function (direction) {
     //De segmenten van 'dit' slangobject:
     var segments = this.segments;
 
@@ -152,7 +151,7 @@ Snake.prototype.doMove = function(direction) {
  */
 function encounterFood(head) {
     var encountered = false;
-    foods.forEach(function(food, index){
+    foods.forEach(function (food, index) {
         if (food.x === head.x && food.y === head.y) {
             encountered = true;
             foods.splice(index, 1);
@@ -191,7 +190,7 @@ function updateHead(head, direction) {
  * @param {number} x x-coordinaat middelpunt
  * @param {number} y y-coordinaat middelpunt
  * @param {string} color kleur van het element
-*/ 
+ */
 function Element(radius, x, y, color) {
     this.radius = radius;
     this.x = x;
@@ -207,11 +206,11 @@ function Element(radius, x, y, color) {
  * @returns {boolean} Geeft true terug indien er sprake is van een collision
  * @global
  */
-Element.prototype.collidesWithOneOf = function(elements) {
+Element.prototype.collidesWithOneOf = function (elements) {
     var x = this.x;
     var y = this.y;
     var collides = false;
-    elements.forEach(function(element) {
+    elements.forEach(function (element) {
         if (element.x === x && element.y === y) {
             collides = true;
         }
@@ -222,10 +221,10 @@ Element.prototype.collidesWithOneOf = function(elements) {
 /**
  * @function createStartSnake
  * @description Slang creëren, bestaande uit twee segmenten in het midden van het veld
-*/
+ */
 function createStartSnake() {
-    var segments = [createSegment(R + WIDTH/2, R + WIDTH/2),
-                    createSegment(R + WIDTH/2, WIDTH/2 - R)];
+    var segments = [createSegment(R + WIDTH / 2, R + WIDTH / 2),
+        createSegment(R + WIDTH / 2, WIDTH / 2 - R)];
     snake = new Snake(segments);
 }
 
@@ -235,7 +234,7 @@ function createStartSnake() {
  * @param {number} x x-coordinaat middelpunt
  * @param {number} y y-coordinaart middelpunt
  * @returns {Element} element met straal R en color SNAKE
-*/
+ */
 function createSegment(x, y) {
     return new Element(R, x, y, SNAKE);
 }
@@ -246,7 +245,7 @@ function createSegment(x, y) {
  * @param {number} x x-coordinaat middelpunt
  * @param {number} y y-coordinaart middelpunt
  * @returns {Element} element (x,y) met straal R en color FOOD
-*/
+ */
 function createFood(x, y) {
     return new Element(R, x, y, FOOD);
 }
@@ -256,14 +255,14 @@ function createFood(x, y) {
  * @description Een element tekenen op het canvas
  * @param {Element} element een Element object
  * @param canvas het tekenveld
-*/
- function drawElement(element, canvas) {
+ */
+function drawElement(element, canvas) {
     canvas.drawArc({
-        draggable : false,
-        fillStyle : element.color,
-        x : element.x,
-        y : element.y,
-        radius : element.radius
+        draggable: false,
+        fillStyle: element.color,
+        x: element.x,
+        y: element.y,
+        radius: element.radius
     });
 }
 
@@ -273,7 +272,7 @@ function createFood(x, y) {
  * @param {number} min een geheel getal als onderste grenswaarde
  * @param {number} max een geheel getal als bovenste grenswaarde (max > min)
  * @returns {number} een random geheel getal x waarvoor geldt: min <= x <= max
-*/
+ */
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -281,16 +280,16 @@ function getRandomInt(min, max) {
 /**
  * @function createFoods
  * @description [Element] array van random verdeelde voedselpartikelen
-*/
+ */
 function createFoods() {
     var i,
         food;
     i = 0;
-    while (i < NUMFOODS ) {
-        food = createFood(XMIN + getRandomInt(0, MAX)*STEP, YMIN + getRandomInt(0, MAX)*STEP);
-        if (!food.collidesWithOneOf(snake.segments) && !food.collidesWithOneOf(foods) ) {
+    while (i < NUMFOODS) {
+        food = createFood(XMIN + getRandomInt(0, MAX) * STEP, YMIN + getRandomInt(0, MAX) * STEP);
+        if (!food.collidesWithOneOf(snake.segments) && !food.collidesWithOneOf(foods)) {
             foods.push(food);
             i++;
         }
-   }
+    }
 }
