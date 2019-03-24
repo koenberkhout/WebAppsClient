@@ -18,13 +18,13 @@ const R        = 10,           // straal van een element
 
       SNAKE   = "DarkRed" ,    // kleur van een slangsegment
       FOOD    = "Olive",       // kleur van voedsel
-      HEAD    = "DarkOrange"   // kleur van de kop van de slang
-    
+      HEAD    = "DarkOrange";  // kleur van de kop van de slang
+
 var snake,
     foods = [];                // voedsel voor de slang
-    
+
 $(document).ready(function() {
-    $("#startSnake").click(init);  
+    $("#startSnake").click(init);
     $("#stopSnake").click(stop);
 });
 
@@ -226,7 +226,7 @@ Element.prototype.collidesWithOneOf = function(elements) {
 function createStartSnake() {
     var segments = [createSegment(R + WIDTH/2, R + WIDTH/2),
                     createSegment(R + WIDTH/2, WIDTH/2 - R)];
-    snake = new Snake(segments);  
+    snake = new Snake(segments);
 }
 
 /**
