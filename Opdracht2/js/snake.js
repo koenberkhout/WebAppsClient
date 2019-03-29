@@ -62,7 +62,7 @@ function move(direction) {
         snake.doMove(direction);
         draw();
     } else {
-        console.log("snake cannot move " + direction);
+        console.log("Snake cannot move " + direction);
     }
 }
 
@@ -138,7 +138,7 @@ Snake.prototype.canMove = function (direction) {
             if (head.x + STEP <= XMAX) canMove = true;
             break;
         default:
-            console.log("Onbekende beweging: " + direction);
+            console.log("Unknown movement: " + direction);
             break;
     }
     return canMove;
@@ -185,7 +185,7 @@ function encounterFood(head) {
         if (food.x === head.x && food.y === head.y) {
             encountered = true;
             foods.splice(index, 1);
-            console.log("food.. yummie");
+            console.log("Food.. yummie");
         }
     });
     return encountered;
@@ -212,7 +212,7 @@ function updateHead(head, direction) {
             head.x += STEP;
             break;
         default:
-            console.log("Onbekende beweging: " + direction + ". Kan head niet updaten.");
+            console.log("Unknown movement: " + direction + ". Can't update head.");
     }
 }
 
