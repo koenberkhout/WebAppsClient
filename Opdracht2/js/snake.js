@@ -1,4 +1,4 @@
-const R        = 10,           // straal van een element
+const R      = 10,           // straal van een element
     STEP     = 2*R,          // stapgrootte
     WIDTH    = 360,          // breedte veld
     HEIGHT   = 360,          // hoogte veld
@@ -16,9 +16,9 @@ const R        = 10,           // straal van een element
     XMAX     = WIDTH - R,    // maximale x waarde
     YMAX     = HEIGHT - R,   // maximale y waarde
 
-    SNAKE   = "DarkRed" ,    // kleur van een slangsegment
-    FOOD    = "Olive",       // kleur van voedsel
-    HEAD    = "DarkOrange";  // kleur van de kop van de slang
+    SNAKE    = "DarkRed" ,   // kleur van een slangsegment
+    FOOD     = "Olive",      // kleur van voedsel
+    HEAD     = "DarkOrange"; // kleur van de kop van de slang
 
 var snake,
     foods = [];                // voedsel voor de slang
