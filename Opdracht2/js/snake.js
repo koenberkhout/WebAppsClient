@@ -83,12 +83,33 @@ function draw() {
 /**
  * @constructor Snake
  * @param {Element[]} segments een array met aaneengesloten slangsegmenten.
- * Het laatste element van segments wordt de kop van de slang.
+ * Het laatste element van segments wordt de kop van de slang en krijgt een andere kleur.
  */
 function Snake(segments) {
-    var head = segments[segments.length - 1];
-    head.color = HEAD;
     this.segments = segments;
+    this.setHeadColor();
+}
+
+/**
+ * @function setHeadColor
+ * @description zet het attribuut color van de kop van de slang
+ * @global
+ */
+Snake.prototype.setHeadColor = function () {
+    var segments = this.segments;
+    segments[segments.length - 1].color = HEAD;
+}
+
+/**
+ * @function getHead
+ * @description Haalt de kop van slang op door het laatste segment van de slang op te vragen
+ * @returns {Element} Geeft segment van de slang terug dat de kop van de slang bevat
+ * @global
+ */
+Snake.prototype.getHead = function () {
+    var segments  = this.segments;
+    var snakeHead = segments[segments.length - 1];
+    return snakeHead;
 }
 
 /**
@@ -96,29 +117,38 @@ function Snake(segments) {
  * @description Controleert of de slang over de rand van het canvas zou lopen (false)
  * of binnen het canvas zou blijven (true) bij beweging in de aangegeven richting.
  * @param {string} direction De richting van de beweging
- * @returns {boolean} Geeft true terug indien mogelijk, en voor wat betreft de discussie omtrent multiple returns zie
- * {@link https://softwareengineering.stackexchange.com/questions/118703/where-did-the-notion-of-one-return-only-come-from#answer-118793}
+ * @returns {boolean} Geeft true terug indien mogelijk en false indien niet mogelijk
  * @global
  */
 Snake.prototype.canMove = function (direction) {
-    var segments = this.segments;
-    var head = segments[segments.length - 1];
+    var head    = this.getHead();
+    var canMove = false;
+
     switch (direction) {
         case UP:
-            return (head.y - STEP) >= YMIN;
+            if (head.y - STEP >= YMIN) canMove = true;
+            break;
         case DOWN:
-            return (head.y + STEP) <= YMAX;
+            if (head.y + STEP <= YMAX) canMove = true;
+            break;
         case LEFT:
-            return (head.x - STEP) >= XMIN;
+            if (head.x - STEP >= XMIN) canMove = true;
+            break;
         case RIGHT:
-            return (head.x + STEP) <= XMAX;
+            if (head.x + STEP <= XMAX) canMove = true;
+            break;
+        default:
+            console.log("Onbekende beweging: " + direction);
+            break;
     }
+    return canMove;
 }
 
 /**
  * @function doMove
- * @description Voert de verplaatsing van de slang uit door de nieuwe positie van het hoofd te updaten,
- * op de oude positie een nieuw normaal segment toe te voegen en het staartelement te verwijderen.
+ * @description Voert de verplaatsing van de slang uit door de nieuwe positie van de kop te updaten,
+ * op de oude positie een nieuw normaal segment toe te voegen en het staartelement te verwijderen
+ * indien de kop geen voedsel is tegengekomen.
  * @param {string} direction de richting
  * @global
  */
@@ -126,28 +156,28 @@ Snake.prototype.doMove = function (direction) {
     //De segmenten van 'dit' slangobject:
     var segments = this.segments;
 
-    //Hoofd toewijzen aan variabele en verwijderen uit array:
+    //Kop toewijzen aan variabele en verwijderen uit array:
     var head = segments.pop();
 
-    //Nieuw 'normaal' segment op de oude positie van het hoofd:
+    //Nieuw 'normaal' segment op de oude positie van de kop:
     segments.push(createSegment(head.x, head.y));
 
-    //Update de nieuwe positie van het hoofd:
+    //Update de nieuwe positie van de kop:
     updateHead(head, direction);
 
     //Verwijder het achterste segment, maar alleen indien geen voedsel tegengekomen:
     if (!encounterFood(head)) segments.shift();
 
-    //Voeg het hoofd weer toe aan de array met segmenten:
+    //Voeg de kop weer toe aan de array met segmenten:
     segments.push(head);
 }
 
 /**
  * @function encounterFood
- * @description Beoordeelt of er voedsel aanwezig is op de locatie waar het hoofd van de slang komt.
+ * @description Beoordeelt of er voedsel aanwezig is op de locatie waar de kop van de slang komt.
  * Als dit zo is dan wordt dit voedsel uit de foods-array verwijderd.
- * @param {Element} head het hoofd van de slang
- * @return {boolean} true als er voedsel was, anders false
+ * @param {Element} head de kop van de slang
+ * @returns {boolean} true als er voedsel was, anders false
  */
 function encounterFood(head) {
     var encountered = false;
@@ -163,8 +193,8 @@ function encounterFood(head) {
 
 /**
  * @function updateHead
- * @description Berekent en update de nieuwe positie van het hoofd van de slang
- * @param {Element} head het hoofd van de slang
+ * @description Berekent en update de nieuwe positie van de kop van de slang
+ * @param {Element} head de kop van de slang
  * @param {string} direction de richting
  */
 function updateHead(head, direction) {
@@ -181,6 +211,8 @@ function updateHead(head, direction) {
         case RIGHT:
             head.x += STEP;
             break;
+        default:
+            console.log("Onbekende beweging: " + direction + ". Kan head niet updaten.");
     }
 }
 
@@ -209,11 +241,8 @@ function Element(radius, x, y, color) {
 Element.prototype.collidesWithOneOf = function (elements) {
     var x = this.x;
     var y = this.y;
-    var collides = false;
-    elements.forEach(function (element) {
-        if (element.x === x && element.y === y) {
-            collides = true;
-        }
+    var collides = elements.some(function (element) {
+        return (element.x === x && element.y === y);
     });
     return collides;
 }
