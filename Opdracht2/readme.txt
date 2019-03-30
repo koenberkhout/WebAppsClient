@@ -19,5 +19,5 @@ JAVASCRIPT (Opdracht 2):
     2: 'Dit' element wel in elements
     3: Test met een lege array
 - In snake.js zijn diverse hulpmethoden geïntroduceerd om de leesbaarheid te bevorderen.
-- Vanwege de beperkte omvang van de javascript tot nu toe is de funtionaliteit niet over verschillende bestanden verdeeld.
-Vanaf opdracht 3 zullen we dit wel doen om de besturen met events en de logica van het spel van elkaar te scheiden.
+- Vanwege de beperkte omvang van de javascript tot nu toe is de functionaliteit niet over verschillende bestanden verdeeld.
+Vanaf opdracht 3 zullen we dit wel doen om de besturing met events en de logica van het spel van elkaar te scheiden.
