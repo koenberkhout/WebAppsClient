@@ -88,6 +88,37 @@ button:hover {
 button:active {
     background: #0b70c3;
 }
+.button-persistence {
+    background: #8f96a5;
+}
+.button-persistence:hover {
+    background: #596273;
+}
+.button-persistence:active {
+    background: #404754;
+}
+.statistics {
+    display: inline-block;
+    border: 1px solid #ccc;
+    width: 360px;
+    max-width: 100%;
+    margin-top: 25px;
+}
+table {
+    display: inline-block;
+    padding: 10px 40px 10px 10px;
+}
+td {
+    border: 1px solid #e6e6e6;
+}
+tr td:first-child {
+    text-align: right;
+    border: none;
+    font-weight: bold;
+}
+td, th {
+    padding: 3px;
+}
 .buttons {
     padding: 1em 0;
 }

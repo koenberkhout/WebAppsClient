@@ -25,7 +25,17 @@ function stopSnake() {
     $(document).off("keydown", keydownHandler);
 }
 
+function saveSnake() {
+    topbar.show();
+}
+
+function loadSnake() {
+    topbar.show();
+}
+
 $(document).ready(function () {
     $("#startSnake").click(startSnake);
     $("#stopSnake").click(stopSnake);
+    $("#saveSnake").click(saveSnake);
+    $("#loadSnake").click(loadSnake);
 });
