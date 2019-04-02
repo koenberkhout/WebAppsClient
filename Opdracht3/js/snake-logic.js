@@ -27,13 +27,11 @@ var logic = (function() {
 
     /**
      * @function init
-     * @description Haal eventueel bestaand voedsel en een bestaande slang weg,
-     * creëer een slang, genereer voedsel, en teken alles
+     * @description Initialiseert de graphics, haalt de breedte en hoogte van
+     * het speelveld op uit de DOM en berekent overige variabelen (voorheen constanten).
      */
     function init() {
         graphics.init();
-        snake = null;
-        foods = [];
 
         width  = $("#mySnakeCanvas").width();
         height = $("#mySnakeCanvas").height();
@@ -42,6 +40,12 @@ var logic = (function() {
         yMax   = height - R;
     }
 
+    /**
+     * @function init
+     * @description Zet de direction op 'UP', zodat de slang bij ieder nieuw spel start naar boven.
+     * Creeert een slang en voedsel en tekent dit op het veld. Tot slot wordt een timer ingesteld
+     * om de slang iedere 500ms automatisch te laten bewegen.
+     */
     function start() {
         direction = UP;
         createStartSnake();
@@ -72,6 +76,12 @@ var logic = (function() {
         graphics.draw(snake.segments, foods);
     }
 
+    /**
+     * @function setDirection
+     * @description Zet de variabele 'direction' op de waarde van de nieuw ontvangen richting,
+     * zoals doorgekregen van de gebruiker.
+     * @param {string} newDirection
+     */
     function setDirection(newDirection) {
         direction = newDirection;
     }
@@ -96,18 +106,33 @@ var logic = (function() {
         }
     }
 
+    /**
+     * @function won
+     * @description Beeindigt het spel, voeg 1 overwinning toe aan de persistence-module
+     * en toont een overwinningsboodschap op het canvas.
+     */
     function won() {
         end();
         persistence.addWon();
         graphics.showWon();
     }
 
+    /**
+     * @function lost
+     * @description Beeindigt het spel, voeg 1 verlies toe aan de persistence-module
+     * en toont een verliezingsboodschap op het canvas.
+     */
     function lost() {
         end();
         persistence.addLost();
         graphics.showLost();
     }
 
+    /**
+     * @function end
+     * @description Beeindigt het spel en triggert een custom event, waarmee de control-module
+     * de eventhandler van "keydown" kan ontkoppelen.
+     */
     function end() {
         stop();
         $(document).trigger("snake:end");
@@ -145,6 +170,13 @@ var logic = (function() {
         return snakeHead;
     }
 
+    /**
+     * @function willUndulateOverItself
+     * @description Bekijkt of de kop, indien deze zou bewegen in de aangegeven richting,
+     * een van zijn eigen lijfsegmenten zou tegenkomen.
+     * @returns {boolean} True bij collision, anders false.
+     * @global
+     */
     Snake.prototype.willUndulateOverItself = function () {
         var head = this.getHead();
         var dummyHead = createSegment(head.x, head.y);
@@ -154,30 +186,6 @@ var logic = (function() {
             return (element.x === dummyHead.x && element.y === dummyHead.y);
         });
         return collides;
-    }
-
-    Snake.prototype.canMove = function() {
-        var head    = this.getHead();
-        var canMove = false;
-
-        switch (direction) {
-            case UP:
-                if (head.y - STEP >= YMIN) canMove = true;
-                break;
-            case DOWN:
-                if (head.y + STEP <= yMax) canMove = true;
-                break;
-            case LEFT:
-                if (head.x - STEP >= XMIN) canMove = true;
-                break;
-            case RIGHT:
-                if (head.x + STEP <= xMax) canMove = true;
-                break;
-            default:
-                console.log("Unknown movement: " + direction);
-                break;
-        }
-        return canMove;
     }
 
     /**
