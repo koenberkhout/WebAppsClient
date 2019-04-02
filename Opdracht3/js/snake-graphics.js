@@ -13,7 +13,7 @@ var graphics = (function() {
      * @description Teken de slang en het voedsel op het canvas
      */
     function draw(segments, foods) {
-        canvas.clearCanvas();
+        clear();
         segments.forEach(function (e) {
             drawElement(e);
         });
@@ -38,6 +38,30 @@ var graphics = (function() {
         });
     }
 
+    function showWon() {
+        writeText("Gewonnen!", "#35a74a")
+    }
+
+    function showLost() {
+        writeText("Verloren!", "#ff0000")
+    }
+
+    function writeText(text, color) {
+        clear();
+
+        canvas.drawText({
+            fillStyle: color,
+            fontStyle: 'bold',
+            fontSize: '30pt',
+            fontFamily: 'Trebuchet MS, sans-serif',
+            text: text,
+            x: 180, y: 100,
+            align: 'center',
+            maxWidth: 360,
+            lineHeight: 2
+        });
+    }
+
     function clear() {
         canvas.clearCanvas();
     }
@@ -50,10 +74,12 @@ var graphics = (function() {
     }
 
     function hideProgress(action) {
-        topbar.hide();
-        $(action + "SnakeIndicator").hide();
-        $(action + "Snake").show();
-        $("#overlay").fadeOut(200);
+        setTimeout(function() {
+            topbar.hide();
+            $(action + "SnakeIndicator").hide();
+            $(action + "Snake").show();
+            $("#overlay").fadeOut(200);
+        }, 250);
     }
 
     function updateStats(wonNow, lostNow, wonEver, lostEver) {
@@ -69,7 +95,9 @@ var graphics = (function() {
         draw: draw,
         showProgress: showProgress,
         hideProgress: hideProgress,
-        updateStats: updateStats
+        updateStats: updateStats,
+        showWon: showWon,
+        showLost: showLost
     }
 
 })();

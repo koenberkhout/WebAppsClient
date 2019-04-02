@@ -24,6 +24,10 @@ var control = (function() {
 
     function stop() {
         logic.stop();
+        removeHandler();
+    }
+
+    function removeHandler() {
         $(document).off("keydown", keydownHandler);
     }
 
@@ -39,7 +43,8 @@ var control = (function() {
         start: start,
         stop: stop,
         save: save,
-        load: load
+        load: load,
+        removeHandler: removeHandler
     }
 
 })();
@@ -49,4 +54,6 @@ $(document).ready(function () {
     $("#stopSnake").click(control.stop);
     $("#saveSnake").click(control.save);
     $("#loadSnake").click(control.load);
+
+    $(document).on("snake:end", control.removeHandler);
 });

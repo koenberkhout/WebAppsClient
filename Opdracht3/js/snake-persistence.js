@@ -24,7 +24,7 @@ var persistence = (function() {
             lost = 0;
             wonEver = parseInt(result.won);
             lostEver = parseInt(result.lost);
-            updateGraphics();
+            updateStats();
         })
         .fail(function() {
             alert("De statistieken kunnen niet worden opgeslagen");
@@ -44,7 +44,7 @@ var persistence = (function() {
         .done(function(result) {
             wonEver = parseInt(result.won);
             lostEver = parseInt(result.lost);
-            updateGraphics();
+            updateStats();
         })
         .fail(function() {
             alert("De statistieken kunnen niet worden geladen");
@@ -53,15 +53,15 @@ var persistence = (function() {
 
     function addWon() {
         won++;
-        updateGraphics();
+        updateStats();
     }
 
     function addLost() {
         lost++;
-        updateGraphics();
+        updateStats();
     }
 
-    function updateGraphics() {
+    function updateStats() {
         graphics.updateStats(won, lost, wonEver, lostEver);
     }
 

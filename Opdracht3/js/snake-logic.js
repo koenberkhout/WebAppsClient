@@ -73,7 +73,7 @@ var logic = (function() {
     }
 
     function runsOverBody() {
-        return Math.random() >= 0.9;
+        return Math.random() >= 0.8;
     }
 
     /**
@@ -83,14 +83,30 @@ var logic = (function() {
      */
     function move() {
         if (runsOverBody()) {
-            persistence.addLost();
-            stop(); //TODO: make event
+            lost();
         } else if (snake.canMove()) {
             snake.doMove();
             draw();
         } else {
             console.log("Snake cannot move " + direction);
         }
+    }
+
+    function won() {
+        end();
+        persistence.addWon();
+        graphics.showWon();
+    }
+
+    function lost() {
+        end();
+        persistence.addLost();
+        graphics.showLost();
+    }
+
+    function end() {
+        stop();
+        $(document).trigger("snake:end");
     }
 
     /**
