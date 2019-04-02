@@ -17,6 +17,7 @@
 
     <!-- JS: eigen werk -->
     <script src="js/snake-graphics.js"></script>
+    <script src="js/snake-persistence.js"></script>
     <script src="js/snake-logic.js"></script>
     <script src="js/snake-control.js"></script>
 
@@ -62,6 +63,7 @@
                         <th></th>
                         <th>Gewonnen</th>
                         <th>Verloren</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -69,21 +71,26 @@
                         <td>Nu:</td>
                         <td id="wonNow">0</td>
                         <td id="lostNow">0</td>
+                        <td>
+                            <i id="saveSnake" title="Bewaren" class="far fa-save clickable"></i>
+                            <i id="saveSnakeIndicator" style="display:none" class="fas fa-sync-alt fa-spin"></i>
+                        </td>
                     </tr>
                     <tr>
                         <td>Altijd:</td>
                         <td id="wonEver">0</td>
                         <td id="lostEver">0</td>
+                        <td>
+                            <i id="loadSnake" title="Laden" class="fas fa-cloud-download-alt clickable"></i>
+                            <i id="loadSnakeIndicator" style="display:none" class="fas fa-sync-alt fa-spin"></i>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
-
-                <div class="buttons">
-                    <button type="button" class="button-persistence" id="saveSnake">Bewaren</button>
-                    <button type="button" class="button-persistence" id="loadSnake">Laden</button>
-                </div>
             </div>
         </div>
     </main>
+
+    <div id="overlay"></div>
 </body>
 </html>

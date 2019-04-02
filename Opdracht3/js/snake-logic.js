@@ -11,7 +11,7 @@ var logic = (function() {
         UP        = "up",
         DOWN      = "down",
 
-        NUMFOODS  = 15,           // aantal voedselelementen
+        NUMFOODS  = 5,           // aantal voedselelementen
 
         XMIN      = R,            // minimale x waarde
         YMIN      = R,            // minimale y waarde
@@ -72,13 +72,20 @@ var logic = (function() {
         direction = newDirection;
     }
 
+    function runsOverBody() {
+        return Math.random() >= 0.9;
+    }
+
     /**
      * @function move
      * @description Beweeg slang in aangegeven richting tenzij slang uit het canvas zou verdwijnen
      * @param {string} direction de richting (een van de constanten UP, DOWN, LEFT of RIGHT)
      */
     function move() {
-        if (snake.canMove()) {
+        if (runsOverBody()) {
+            persistence.addLost();
+            stop(); //TODO: make event
+        } else if (snake.canMove()) {
             snake.doMove();
             draw();
         } else {

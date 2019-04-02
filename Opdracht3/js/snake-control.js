@@ -1,41 +1,52 @@
-function keydownHandler(e) {
-    switch (e.which) {
-        case 37:
-            logic.moveLeft();
-            break;
-        case 38:
-            logic.moveUp();
-            break;
-        case 39:
-            logic.moveRight();
-            break;
-        case 40:
-            logic.moveDown();
-            break;
+var control = (function() {
+
+    function keydownHandler(e) {
+        switch (e.which) {
+            case 37:
+                logic.moveLeft();
+                break;
+            case 38:
+                logic.moveUp();
+                break;
+            case 39:
+                logic.moveRight();
+                break;
+            case 40:
+                logic.moveDown();
+                break;
+        }
     }
-}
 
-function startSnake() {
-    logic.init();
-    $(document).on("keydown", keydownHandler);
-}
+    function start() {
+        logic.init();
+        $(document).on("keydown", keydownHandler);
+    }
 
-function stopSnake() {
-    logic.stop();
-    $(document).off("keydown", keydownHandler);
-}
+    function stop() {
+        logic.stop();
+        $(document).off("keydown", keydownHandler);
+    }
 
-function saveSnake() {
-    topbar.show();
-}
+    function save() {
+        persistence.save();
+    }
 
-function loadSnake() {
-    topbar.show();
-}
+    function load() {
+        persistence.load();
+    }
+
+    return {
+        start: start,
+        stop: stop,
+        save: save,
+        load: load
+    }
+
+})();
 
 $(document).ready(function () {
-    $("#startSnake").click(startSnake);
-    $("#stopSnake").click(stopSnake);
-    $("#saveSnake").click(saveSnake);
-    $("#loadSnake").click(loadSnake);
+    $("#startSnake").click(control.start);
+    $("#stopSnake").click(control.stop);
+    $("#saveSnake").click(control.save);
+    $("#loadSnake").click(control.load);
 });

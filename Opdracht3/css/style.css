@@ -88,25 +88,22 @@ button:hover {
 button:active {
     background: #0b70c3;
 }
-.button-persistence {
-    background: #8f96a5;
+.buttons {
+    padding: 1em 0;
 }
-.button-persistence:hover {
-    background: #596273;
-}
-.button-persistence:active {
-    background: #404754;
-}
+
+/** Statistieken bewaren en laden */
 .statistics {
     display: inline-block;
     border: 1px solid #ccc;
-    width: 360px;
+    width: 360px; /* px, want canvas ook in px */
     max-width: 100%;
-    margin-top: 25px;
+    margin-top: 2em;
 }
 table {
     display: inline-block;
-    padding: 10px 40px 10px 10px;
+    padding: 1em 2em 1em 1em;
+    position: relative;
 }
 td {
     border: 1px solid #e6e6e6;
@@ -116,11 +113,35 @@ tr td:first-child {
     border: none;
     font-weight: bold;
 }
-td, th {
-    padding: 3px;
+tr td:last-child {
+    border: none;
 }
-.buttons {
-    padding: 1em 0;
+td, th {
+    padding: 0.3em;
+}
+.clickable {
+    opacity: 0.5;
+    cursor: pointer;
+}
+.clickable:hover {
+    opacity: 1;
+}
+.fa-spin {
+    cursor: not-allowed;
+}
+
+/** Overlay voor tijdens het laden en opslaan */
+#overlay {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 3px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0, 0.4);
+    z-index: 99;
 }
 
 /** Responsive

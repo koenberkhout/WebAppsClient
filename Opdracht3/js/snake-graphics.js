@@ -42,10 +42,34 @@ var graphics = (function() {
         canvas.clearCanvas();
     }
 
+    function showProgress(action) {
+        topbar.show();
+        $("#overlay").fadeIn(200);
+        $(action + "Snake").hide();
+        $(action + "SnakeIndicator").show();
+    }
+
+    function hideProgress(action) {
+        topbar.hide();
+        $(action + "SnakeIndicator").hide();
+        $(action + "Snake").show();
+        $("#overlay").fadeOut(200);
+    }
+
+    function updateStats(wonNow, lostNow, wonEver, lostEver) {
+        $("#wonNow").text(wonNow);
+        $("#lostNow").text(lostNow);
+        $("#wonEver").text(wonEver);
+        $("#lostEver").text(lostEver);
+    }
+
     return {
         init: init,
         clear: clear,
-        draw: draw
+        draw: draw,
+        showProgress: showProgress,
+        hideProgress: hideProgress,
+        updateStats: updateStats
     }
 
 })();
