@@ -17,8 +17,12 @@ var control = (function() {
         }
     }
 
-    function start() {
+    function init() {
         logic.init();
+    }
+
+    function start() {
+        logic.start();
         $(document).on("keydown", keydownHandler);
     }
 
@@ -40,6 +44,7 @@ var control = (function() {
     }
 
     return {
+        init: init,
         start: start,
         stop: stop,
         save: save,
@@ -50,6 +55,8 @@ var control = (function() {
 })();
 
 $(document).ready(function () {
+    control.init();
+
     $("#startSnake").click(control.start);
     $("#stopSnake").click(control.stop);
     $("#saveSnake").click(control.save);

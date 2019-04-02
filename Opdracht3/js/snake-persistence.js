@@ -1,10 +1,12 @@
 var persistence = (function() {
 
-    const API_URL = "https://www.koenberkhout.nl/snake/";
-    var won       = 0;
-    var lost      = 0;
-    var wonEver   = 0;
-    var lostEver  = 0;
+    const API_URL  = "https://www.koenberkhout.nl/snake/";
+
+    var won        = 0;
+    var lost       = 0;
+    var wonEver    = 0;
+    var lostEver   = 0;
+
 
     function save() {
         graphics.showProgress("#save");
@@ -27,7 +29,7 @@ var persistence = (function() {
             updateStats();
         })
         .fail(function() {
-            alert("De statistieken kunnen niet worden opgeslagen");
+            console.log("De statistieken kunnen niet worden opgeslagen");
         })
     }
 
@@ -47,7 +49,7 @@ var persistence = (function() {
             updateStats();
         })
         .fail(function() {
-            alert("De statistieken kunnen niet worden geladen");
+            console.log("De statistieken kunnen niet worden geladen");
         });
     }
 

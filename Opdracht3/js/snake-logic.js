@@ -2,33 +2,27 @@ var logic = (function() {
 
     const R       = 10,           // straal van een element
         STEP      = 2*R,          // stapgrootte
-        WIDTH     = 360,          // breedte veld
-        HEIGHT    = 360,          // hoogte veld
-                                  // er moet gelden: WIDTH = HEIGHT
-        MAX       = WIDTH/STEP-1, // netto veldbreedte
         LEFT      = "left",       // bewegingsrichtingen
         RIGHT     = "right",
         UP        = "up",
         DOWN      = "down",
-
-        NUMFOODS  = 5,           // aantal voedselelementen
-
+        NUMFOODS  = 5,            // aantal voedselelementen
         XMIN      = R,            // minimale x waarde
         YMIN      = R,            // minimale y waarde
-        XMAX      = WIDTH - R,    // maximale x waarde
-        YMAX      = HEIGHT - R,   // maximale y waarde
-
         SNAKE     = "DarkRed" ,   // kleur van een slangsegment
         FOOD      = "Olive",      // kleur van voedsel
         HEAD      = "DarkOrange", // kleur van de kop van de slang
-
         SLEEPTIME = 500;          // tijd voor automatisch bewegen
 
     var snake,
         foods     = [],           // voedsel voor de slang
         direction,                // de richting, bij begin UP
-        snakeTimer;               // slang automatisch laten bewegen
-
+        snakeTimer,               // slang automatisch laten bewegen
+        width,                    // breedte veld
+        height,                   // hoogte veld
+        max,                      // netto veldbreedte
+        xMax,                     // maximale x waarde
+        yMax;                     // maximale y waarde
 
 
     /**
@@ -38,9 +32,18 @@ var logic = (function() {
      */
     function init() {
         graphics.init();
-        snake = undefined;
-        direction = UP;
+        snake = null;
         foods = [];
+
+        width  = $("#mySnakeCanvas").width();
+        height = $("#mySnakeCanvas").height();
+        max    = width / STEP - 1;
+        xMax   = width - R;
+        yMax   = height - R;
+    }
+
+    function start() {
+        direction = UP;
         createStartSnake();
         createFoods();
         draw();
@@ -56,7 +59,7 @@ var logic = (function() {
      */
     function stop() {
         graphics.clear();
-        snake = undefined;
+        snake = null;
         foods = [];
         clearInterval(snakeTimer);
     }
@@ -73,22 +76,22 @@ var logic = (function() {
         direction = newDirection;
     }
 
-    function runsOverBody() {
-        return Math.random() >= 0.8;
-    }
-
     /**
      * @function move
      * @description Beweeg slang in aangegeven richting tenzij slang uit het canvas zou verdwijnen
-     * @param {string} direction de richting (een van de constanten UP, DOWN, LEFT of RIGHT)
      */
     function move() {
-        if (runsOverBody()) {
+        if (snake.segments.length-2 === NUMFOODS) {
+            won();
+        }
+        else if (snake.willUndulateOverItself()) {
             lost();
-        } else if (snake.canMove()) {
+        }
+        else if (snake.canMove()) {
             snake.doMove();
             draw();
-        } else {
+        }
+        else {
             console.log("Snake cannot move " + direction);
         }
     }
@@ -142,11 +145,45 @@ var logic = (function() {
         return snakeHead;
     }
 
+    Snake.prototype.willUndulateOverItself = function () {
+        var head = this.getHead();
+        var dummyHead = createSegment(head.x, head.y);
+        updateHead(dummyHead);
+
+        var collides = this.segments.some(function (element) {
+            return (element.x === dummyHead.x && element.y === dummyHead.y);
+        });
+        return collides;
+    }
+
+    Snake.prototype.canMove = function() {
+        var head    = this.getHead();
+        var canMove = false;
+
+        switch (direction) {
+            case UP:
+                if (head.y - STEP >= YMIN) canMove = true;
+                break;
+            case DOWN:
+                if (head.y + STEP <= yMax) canMove = true;
+                break;
+            case LEFT:
+                if (head.x - STEP >= XMIN) canMove = true;
+                break;
+            case RIGHT:
+                if (head.x + STEP <= xMax) canMove = true;
+                break;
+            default:
+                console.log("Unknown movement: " + direction);
+                break;
+        }
+        return canMove;
+    }
+
     /**
      * @function canMove
      * @description Controleert of de slang over de rand van het canvas zou lopen (false)
      * of binnen het canvas zou blijven (true) bij beweging in de aangegeven richting.
-     * @param {string} direction De richting van de beweging
      * @returns {boolean} Geeft true terug indien mogelijk en false indien niet mogelijk
      * @global
      */
@@ -159,13 +196,13 @@ var logic = (function() {
                 if (head.y - STEP >= YMIN) canMove = true;
                 break;
             case DOWN:
-                if (head.y + STEP <= YMAX) canMove = true;
+                if (head.y + STEP <= yMax) canMove = true;
                 break;
             case LEFT:
                 if (head.x - STEP >= XMIN) canMove = true;
                 break;
             case RIGHT:
-                if (head.x + STEP <= XMAX) canMove = true;
+                if (head.x + STEP <= xMax) canMove = true;
                 break;
             default:
                 console.log("Unknown movement: " + direction);
@@ -179,7 +216,6 @@ var logic = (function() {
      * @description Voert de verplaatsing van de slang uit door de nieuwe positie van de kop te updaten,
      * op de oude positie een nieuw normaal segment toe te voegen en het staartelement te verwijderen
      * indien de kop geen voedsel is tegengekomen.
-     * @param {string} direction de richting
      * @global
      */
     Snake.prototype.doMove = function() {
@@ -193,10 +229,12 @@ var logic = (function() {
         segments.push(createSegment(head.x, head.y));
 
         //Update de nieuwe positie van de kop:
-        updateHead(head, direction);
+        updateHead(head);
 
         //Verwijder het achterste segment, maar alleen indien geen voedsel tegengekomen:
-        if (!encounterFood(head)) segments.shift();
+        if (!encounterFood(head)) {
+            segments.shift();
+        }
 
         //Voeg de kop weer toe aan de array met segmenten:
         segments.push(head);
@@ -225,9 +263,8 @@ var logic = (function() {
      * @function updateHead
      * @description Berekent en update de nieuwe positie van de kop van de slang
      * @param {Element} head de kop van de slang
-     * @param {string} direction de richting
      */
-    function updateHead(head, direction) {
+    function updateHead(head) {
         switch (direction) {
             case UP:
                 head.y -= STEP;
@@ -282,8 +319,8 @@ var logic = (function() {
      * @description Slang creëren, bestaande uit twee segmenten in het midden van het veld
      */
     function createStartSnake() {
-        var segments = [createSegment(R + WIDTH / 2, R + WIDTH / 2),
-            createSegment(R + WIDTH / 2, WIDTH / 2 - R)];
+        var segments = [createSegment(R + width / 2, R + width / 2),
+            createSegment(R + width / 2, width / 2 - R)];
         snake = new Snake(segments);
     }
 
@@ -329,7 +366,7 @@ var logic = (function() {
             food;
         i = 0;
         while (i < NUMFOODS) {
-            food = createFood(XMIN + getRandomInt(0, MAX) * STEP, YMIN + getRandomInt(0, MAX) * STEP);
+            food = createFood(XMIN + getRandomInt(0, max) * STEP, YMIN + getRandomInt(0, max) * STEP);
             if (!food.collidesWithOneOf(snake.segments) && !food.collidesWithOneOf(foods)) {
                 foods.push(food);
                 i++;
@@ -339,6 +376,7 @@ var logic = (function() {
 
     return {
         init: init,
+        start: start,
         stop: stop,
         moveLeft:  function() { setDirection(LEFT);  },
         moveUp:    function() { setDirection(UP);    },
