@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: snake-logic.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: snake-logic.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var logic = (function() {
+
+    const R       = 10,           // straal van een element
+        STEP      = 2*R,          // stapgrootte
+        LEFT      = "left",       // bewegingsrichtingen
+        RIGHT     = "right",
+        UP        = "up",
+        DOWN      = "down",
+        NUMFOODS  = 5,            // aantal voedselelementen
+        XMIN      = R,            // minimale x waarde
+        YMIN      = R,            // minimale y waarde
+        SNAKE     = "DarkRed" ,   // kleur van een slangsegment
+        FOOD      = "Olive",      // kleur van voedsel
+        HEAD      = "DarkOrange", // kleur van de kop van de slang
+        SLEEPTIME = 500;          // tijd voor automatisch bewegen
+
+    var snake,
+        foods     = [],           // voedsel voor de slang
+        direction,                // de richting, bij begin UP
+        snakeTimer,               // slang automatisch laten bewegen
+        width,                    // breedte veld
+        height,                   // hoogte veld
+        max,                      // netto veldbreedte
+        xMax,                     // maximale x waarde
+        yMax;                     // maximale y waarde
+
+
+    /**
+     * @function init
+     * @description Initialiseert de graphics, haalt de breedte en hoogte van
+     * het speelveld op uit de DOM en berekent overige variabelen (voorheen constanten).
+     */
+    function init() {
+        graphics.init();
+
+        width  = $("#mySnakeCanvas").width();
+        height = $("#mySnakeCanvas").height();
+        max    = width / STEP - 1;
+        xMax   = width - R;
+        yMax   = height - R;
+    }
+
+    /**
+     * @function init
+     * @description Zet de direction op 'UP', zodat de slang bij ieder nieuw spel start naar boven.
+     * Creeert een slang en voedsel en tekent dit op het veld. Tot slot wordt een timer ingesteld
+     * om de slang iedere 500ms automatisch te laten bewegen.
+     */
+    function start() {
+        direction = UP;
+        createStartSnake();
+        createFoods();
+        draw();
+
+        snakeTimer = setInterval(function() {
+            move();
+        }, SLEEPTIME);
+    }
+
+    /**
+     * @function stop
+     * @description Laat slang en voedsel verdwijnen, en teken leeg veld
+     */
+    function stop() {
+        graphics.clear();
+        snake = null;
+        foods = [];
+        clearInterval(snakeTimer);
+    }
+
+    /**
+     * @function draw
+     * @description Geef het graphics-object opdracht om de slang en het voedsel op het canvas te tekenen.
+     */
+    function draw() {
+        graphics.draw(snake.segments, foods);
+    }
+
+    /**
+     * @function setDirection
+     * @description Zet de variabele 'direction' op de waarde van de nieuw ontvangen richting,
+     * zoals doorgekregen van de gebruiker.
+     * @param {string} newDirection
+     */
+    function setDirection(newDirection) {
+        direction = newDirection;
+    }
+
+    /**
+     * @function move
+     * @description Beweeg slang in aangegeven richting tenzij slang uit het canvas zou verdwijnen
+     */
+    function move() {
+        if (snake.segments.length-2 === NUMFOODS) {
+            won();
+        }
+        else if (snake.willUndulateOverItself()) {
+            lost();
+        }
+        else if (snake.canMove()) {
+            snake.doMove();
+            draw();
+        }
+        else {
+            console.log("Snake cannot move " + direction);
+        }
+    }
+
+    /**
+     * @function won
+     * @description Beeindigt het spel, voeg 1 overwinning toe aan de persistence-module
+     * en toont een overwinningsboodschap op het canvas.
+     */
+    function won() {
+        end();
+        persistence.addWon();
+        graphics.showWon();
+    }
+
+    /**
+     * @function lost
+     * @description Beeindigt het spel, voeg 1 verlies toe aan de persistence-module
+     * en toont een verliezingsboodschap op het canvas.
+     */
+    function lost() {
+        end();
+        persistence.addLost();
+        graphics.showLost();
+    }
+
+    /**
+     * @function end
+     * @description Beeindigt het spel en triggert een custom event, waarmee de control-module
+     * de eventhandler van "keydown" kan ontkoppelen.
+     */
+    function end() {
+        stop();
+        $(document).trigger("snake:end");
+    }
+
+    /**
+     * @constructor Snake
+     * @param {Element[]} segments een array met aaneengesloten slangsegmenten.
+     * Het laatste element van segments wordt de kop van de slang en krijgt een andere kleur.
+     */
+    function Snake(segments) {
+        this.segments = segments;
+        this.setHeadColor();
+    }
+
+    /**
+     * @function setHeadColor
+     * @description zet het attribuut color van de kop van de slang
+     * @global
+     */
+    Snake.prototype.setHeadColor = function () {
+        var segments = this.segments;
+        segments[segments.length - 1].color = HEAD;
+    }
+
+    /**
+     * @function getHead
+     * @description Haalt de kop van slang op door het laatste segment van de slang op te vragen
+     * @returns {Element} Geeft segment van de slang terug dat de kop van de slang bevat
+     * @global
+     */
+    Snake.prototype.getHead = function () {
+        var segments  = this.segments;
+        var snakeHead = segments[segments.length - 1];
+        return snakeHead;
+    }
+
+    /**
+     * @function willUndulateOverItself
+     * @description Bekijkt of de kop, indien deze zou bewegen in de aangegeven richting,
+     * een van zijn eigen lijfsegmenten zou tegenkomen.
+     * @returns {boolean} True bij collision, anders false.
+     * @global
+     */
+    Snake.prototype.willUndulateOverItself = function () {
+        var head = this.getHead();
+        var dummyHead = createSegment(head.x, head.y);
+        updateHead(dummyHead);
+
+        var collides = this.segments.some(function (element) {
+            return (element.x === dummyHead.x &amp;&amp; element.y === dummyHead.y);
+        });
+        return collides;
+    }
+
+    /**
+     * @function canMove
+     * @description Controleert of de slang over de rand van het canvas zou lopen (false)
+     * of binnen het canvas zou blijven (true) bij beweging in de aangegeven richting.
+     * @returns {boolean} Geeft true terug indien mogelijk en false indien niet mogelijk
+     * @global
+     */
+    Snake.prototype.canMove = function() {
+        var head    = this.getHead();
+        var canMove = false;
+
+        switch (direction) {
+            case UP:
+                if (head.y - STEP >= YMIN) canMove = true;
+                break;
+            case DOWN:
+                if (head.y + STEP &lt;= yMax) canMove = true;
+                break;
+            case LEFT:
+                if (head.x - STEP >= XMIN) canMove = true;
+                break;
+            case RIGHT:
+                if (head.x + STEP &lt;= xMax) canMove = true;
+                break;
+            default:
+                console.log("Unknown movement: " + direction);
+                break;
+        }
+        return canMove;
+    }
+
+    /**
+     * @function doMove
+     * @description Voert de verplaatsing van de slang uit door de nieuwe positie van de kop te updaten,
+     * op de oude positie een nieuw normaal segment toe te voegen en het staartelement te verwijderen
+     * indien de kop geen voedsel is tegengekomen.
+     * @global
+     */
+    Snake.prototype.doMove = function() {
+        //De segmenten van 'dit' slangobject:
+        var segments = this.segments;
+
+        //Kop toewijzen aan variabele en verwijderen uit array:
+        var head = segments.pop();
+
+        //Nieuw 'normaal' segment op de oude positie van de kop:
+        segments.push(createSegment(head.x, head.y));
+
+        //Update de nieuwe positie van de kop:
+        updateHead(head);
+
+        //Verwijder het achterste segment, maar alleen indien geen voedsel tegengekomen:
+        if (!encounterFood(head)) {
+            segments.shift();
+        }
+
+        //Voeg de kop weer toe aan de array met segmenten:
+        segments.push(head);
+    }
+
+    /**
+     * @function encounterFood
+     * @description Beoordeelt of er voedsel aanwezig is op de locatie waar de kop van de slang komt.
+     * Als dit zo is dan wordt dit voedsel uit de foods-array verwijderd.
+     * @param {Element} head de kop van de slang
+     * @returns {boolean} true als er voedsel was, anders false
+     */
+    function encounterFood(head) {
+        var encountered = false;
+        foods.forEach(function (food, index) {
+            if (food.x === head.x &amp;&amp; food.y === head.y) {
+                encountered = true;
+                foods.splice(index, 1);
+                console.log("Food.. yummie");
+            }
+        });
+        return encountered;
+    }
+
+    /**
+     * @function updateHead
+     * @description Berekent en update de nieuwe positie van de kop van de slang
+     * @param {Element} head de kop van de slang
+     */
+    function updateHead(head) {
+        switch (direction) {
+            case UP:
+                head.y -= STEP;
+                break;
+            case DOWN:
+                head.y += STEP;
+                break;
+            case LEFT:
+                head.x -= STEP;
+                break;
+            case RIGHT:
+                head.x += STEP;
+                break;
+            default:
+                console.log("Unknown movement: " + direction + ". Can't update head.");
+        }
+    }
+
+    /**
+     * @constructor Element
+     * @param {number} radius straal
+     * @param {number} x x-coordinaat middelpunt
+     * @param {number} y y-coordinaat middelpunt
+     * @param {string} color kleur van het element
+     */
+    function Element(radius, x, y, color) {
+        this.radius = radius;
+        this.x = x;
+        this.y = y;
+        this.color = color;
+    }
+
+    /**
+     * @function collidesWithOneOf
+     * @description Controleert of 'dit' element dezelfde x en y heeft als
+     * een van de elementen die als parameter worden meegegeven.
+     * @param {Element[]} elements De array met elementen (slangsegmenten of foods)
+     * @returns {boolean} Geeft true terug indien er sprake is van een collision
+     * @global
+     */
+    Element.prototype.collidesWithOneOf = function (elements) {
+        var x = this.x;
+        var y = this.y;
+        var collides = elements.some(function (element) {
+            return (element.x === x &amp;&amp; element.y === y);
+        });
+        return collides;
+    }
+
+    /**
+     * @function createStartSnake
+     * @description Slang creëren, bestaande uit twee segmenten in het midden van het veld
+     */
+    function createStartSnake() {
+        var segments = [createSegment(R + width / 2, R + width / 2),
+            createSegment(R + width / 2, width / 2 - R)];
+        snake = new Snake(segments);
+    }
+
+    /**
+     * @function createSegment
+     * @description Slangsegment creëren op een bepaalde plaats
+     * @param {number} x x-coordinaat middelpunt
+     * @param {number} y y-coordinaart middelpunt
+     * @returns {Element} element met straal R en color SNAKE
+     */
+    function createSegment(x, y) {
+        return new Element(R, x, y, SNAKE);
+    }
+
+    /**
+     * @function createFood
+     * @description Voedselelement creëren op een bepaalde plaats
+     * @param {number} x x-coordinaat middelpunt
+     * @param {number} y y-coordinaart middelpunt
+     * @returns {Element} element (x,y) met straal R en color FOOD
+     */
+    function createFood(x, y) {
+        return new Element(R, x, y, FOOD);
+    }
+
+    /**
+     * @function getRandomInt
+     * @description Creëren van random geheel getal in het interval [min, max]
+     * @param {number} min een geheel getal als onderste grenswaarde
+     * @param {number} max een geheel getal als bovenste grenswaarde (max > min)
+     * @returns {number} een random geheel getal x waarvoor geldt: min &lt;= x &lt;= max
+     */
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    /**
+     * @function createFoods
+     * @description [Element] array van random verdeelde voedselpartikelen
+     */
+    function createFoods() {
+        var i,
+            food;
+        i = 0;
+        while (i &lt; NUMFOODS) {
+            food = createFood(XMIN + getRandomInt(0, max) * STEP, YMIN + getRandomInt(0, max) * STEP);
+            if (!food.collidesWithOneOf(snake.segments) &amp;&amp; !food.collidesWithOneOf(foods)) {
+                foods.push(food);
+                i++;
+            }
+        }
+    }
+
+    /**
+     * PUBLIC API
+     */
+    return {
+        init: init,
+        start: start,
+        stop: stop,
+        moveLeft:  function() { setDirection(LEFT);  },
+        moveUp:    function() { setDirection(UP);    },
+        moveRight: function() { setDirection(RIGHT); },
+        moveDown:  function() { setDirection(DOWN);  }
+    }
+
+})();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Element.html">Element</a></li><li><a href="Snake.html">Snake</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addLost">addLost</a></li><li><a href="global.html#addWon">addWon</a></li><li><a href="global.html#canMove">canMove</a></li><li><a href="global.html#clear">clear</a></li><li><a href="global.html#collidesWithOneOf">collidesWithOneOf</a></li><li><a href="global.html#createFood">createFood</a></li><li><a href="global.html#createFoods">createFoods</a></li><li><a href="global.html#createSegment">createSegment</a></li><li><a href="global.html#createStartSnake">createStartSnake</a></li><li><a href="global.html#doMove">doMove</a></li><li><a href="global.html#draw">draw</a></li><li><a href="global.html#drawElement">drawElement</a></li><li><a href="global.html#encounterFood">encounterFood</a></li><li><a href="global.html#end">end</a></li><li><a href="global.html#getHead">getHead</a></li><li><a href="global.html#getRandomInt">getRandomInt</a></li><li><a href="global.html#hideProgress">hideProgress</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#keydownHandler">keydownHandler</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#lost">lost</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#removeHandler">removeHandler</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#setDirection">setDirection</a></li><li><a href="global.html#setHeadColor">setHeadColor</a></li><li><a href="global.html#showLost">showLost</a></li><li><a href="global.html#showProgress">showProgress</a></li><li><a href="global.html#showWon">showWon</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#updateHead">updateHead</a></li><li><a href="global.html#updateStats">updateStats</a></li><li><a href="global.html#willUndulateOverItself">willUndulateOverItself</a></li><li><a href="global.html#won">won</a></li><li><a href="global.html#writeText">writeText</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 02 2019 22:10:13 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

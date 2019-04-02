@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: snake-persistence.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: snake-persistence.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var persistence = (function() {
+
+    const API_URL  = "https://www.koenberkhout.nl/snake/";
+
+    var won        = 0;
+    var lost       = 0;
+    var wonEver    = 0;
+    var lostEver   = 0;
+
+
+    /**
+     * @function save
+     * @description Stuurt het aantal overwinningen en verliezen die in de huidige
+     * sessie zijn gemaakt naar de server in json-formaat. Het resultaat wordt opgeslagen
+     * in wonEver en lostEver. Het opdaten op het scherm wordt gedelegeerd aan 'graphics'.
+     */
+    function save() {
+        graphics.showProgress("#save");
+
+        $.ajax({
+            type: 'POST',
+            url: API_URL,
+            data: JSON.stringify ({won: won, lost: lost}),
+            contentType: "application/json",
+            dataType: 'json'
+        })
+        .always(function() {
+            graphics.hideProgress("#save");
+        })
+        .done(function(result) {
+            won  = 0;
+            lost = 0;
+            wonEver = parseInt(result.won);
+            lostEver = parseInt(result.lost);
+            updateStats();
+        })
+        .fail(function() {
+            console.log("De statistieken kunnen niet worden opgeslagen");
+        })
+    }
+
+    /**
+     * @function load
+     * @description Haalt de spelstatistieken op van de server (totaal aantal overwinningen
+     * en verliezen) en delegeert het updaten van de weergave hiervan aan module 'grapics'.
+     */
+    function load() {
+        graphics.showProgress("#load");
+
+        $.get({
+            url: API_URL,
+            cache: false
+        })
+        .always(function() {
+            graphics.hideProgress("#load");
+        })
+        .done(function(result) {
+            wonEver = parseInt(result.won);
+            lostEver = parseInt(result.lost);
+            updateStats();
+        })
+        .fail(function() {
+            console.log("De statistieken kunnen niet worden geladen");
+        });
+    }
+
+    /**
+     * @function addWon
+     * @description Verhoogt het aantal overwinningen van deze sessie met 1 en
+     * delegeert het updaten van de weergave hiervan aan module 'grapics'.
+     */
+    function addWon() {
+        won++;
+        updateStats();
+    }
+
+    /**
+     * @function addLost
+     * @description Verhoogt het aantal verliezen van deze sessie met 1 en
+     * delegeert het updaten van de weergave hiervan aan module 'grapics'.
+     */
+    function addLost() {
+        lost++;
+        updateStats();
+    }
+
+    /**
+     * @function updateStats
+     * @description Geeft de huidige statistieken mee aan de graphics-module
+     * om deze te kunnen opdaten op het scherm.
+     */
+    function updateStats() {
+        graphics.updateStats(won, lost, wonEver, lostEver);
+    }
+
+    /**
+     * PUBLIC API
+     */
+    return {
+        save: save,
+        load: load,
+        addWon:  addWon,
+        addLost: addLost
+    }
+
+})();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Element.html">Element</a></li><li><a href="Snake.html">Snake</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addLost">addLost</a></li><li><a href="global.html#addWon">addWon</a></li><li><a href="global.html#canMove">canMove</a></li><li><a href="global.html#clear">clear</a></li><li><a href="global.html#collidesWithOneOf">collidesWithOneOf</a></li><li><a href="global.html#createFood">createFood</a></li><li><a href="global.html#createFoods">createFoods</a></li><li><a href="global.html#createSegment">createSegment</a></li><li><a href="global.html#createStartSnake">createStartSnake</a></li><li><a href="global.html#doMove">doMove</a></li><li><a href="global.html#draw">draw</a></li><li><a href="global.html#drawElement">drawElement</a></li><li><a href="global.html#encounterFood">encounterFood</a></li><li><a href="global.html#end">end</a></li><li><a href="global.html#getHead">getHead</a></li><li><a href="global.html#getRandomInt">getRandomInt</a></li><li><a href="global.html#hideProgress">hideProgress</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#keydownHandler">keydownHandler</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#lost">lost</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#removeHandler">removeHandler</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#setDirection">setDirection</a></li><li><a href="global.html#setHeadColor">setHeadColor</a></li><li><a href="global.html#showLost">showLost</a></li><li><a href="global.html#showProgress">showProgress</a></li><li><a href="global.html#showWon">showWon</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#updateHead">updateHead</a></li><li><a href="global.html#updateStats">updateStats</a></li><li><a href="global.html#willUndulateOverItself">willUndulateOverItself</a></li><li><a href="global.html#won">won</a></li><li><a href="global.html#writeText">writeText</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 02 2019 22:10:13 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

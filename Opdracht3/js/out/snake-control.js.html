@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: snake-control.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: snake-control.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var control = (function() {
+
+    /**
+     * @function keydownHandler
+     * @description Bekijkt of de ingedrukte toets een van de pijltjestoetsen is en zo ja,
+     * dan wordt de corresponderende functie in 'logic' aangeroepen.
+     * @param e Het event
+     */
+    function keydownHandler(e) {
+        switch (e.which) {
+            case 37:
+                logic.moveLeft();
+                break;
+            case 38:
+                logic.moveUp();
+                break;
+            case 39:
+                logic.moveRight();
+                break;
+            case 40:
+                logic.moveDown();
+                break;
+        }
+    }
+
+    /**
+     * @function init
+     * @description Initialiseert/prepareert het spel in de 'logic' module.
+     */
+    function init() {
+        logic.init();
+    }
+
+    /**
+     * @function start
+     * @description Start het spel, en voegt de keydownHandler toe zodat er
+     * gereageerd kan worden op het indrukken van de pijltjestoetsen.
+     */
+    function start() {
+        logic.start();
+        $(document).on("keydown", keydownHandler);
+    }
+
+    /**
+     * @function stop
+     * @description Stopt het spel en ontkoppelt de keydownHandler.
+     */
+    function stop() {
+        logic.stop();
+        removeHandler();
+    }
+
+    /**
+     * @function removeHandler
+     * @description Ontkoppelt de keydownHandler van het 'keydown' event.
+     */
+    function removeHandler() {
+        $(document).off("keydown", keydownHandler);
+    }
+
+    /**
+     * @function save
+     * @description Delegeert het opslaan van het spel aan de persistence-module.
+     */
+    function save() {
+        persistence.save();
+    }
+
+    /**
+     * @function load
+     * @description Delegeert het laden van het spel aan de persistence-module.
+     */
+    function load() {
+        persistence.load();
+    }
+
+    /**
+     * PUBLIC API
+     */
+    return {
+        init: init,
+        start: start,
+        stop: stop,
+        save: save,
+        load: load,
+        removeHandler: removeHandler
+    }
+
+})();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Element.html">Element</a></li><li><a href="Snake.html">Snake</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addLost">addLost</a></li><li><a href="global.html#addWon">addWon</a></li><li><a href="global.html#canMove">canMove</a></li><li><a href="global.html#clear">clear</a></li><li><a href="global.html#collidesWithOneOf">collidesWithOneOf</a></li><li><a href="global.html#createFood">createFood</a></li><li><a href="global.html#createFoods">createFoods</a></li><li><a href="global.html#createSegment">createSegment</a></li><li><a href="global.html#createStartSnake">createStartSnake</a></li><li><a href="global.html#doMove">doMove</a></li><li><a href="global.html#draw">draw</a></li><li><a href="global.html#drawElement">drawElement</a></li><li><a href="global.html#encounterFood">encounterFood</a></li><li><a href="global.html#end">end</a></li><li><a href="global.html#getHead">getHead</a></li><li><a href="global.html#getRandomInt">getRandomInt</a></li><li><a href="global.html#hideProgress">hideProgress</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#keydownHandler">keydownHandler</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#lost">lost</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#removeHandler">removeHandler</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#setDirection">setDirection</a></li><li><a href="global.html#setHeadColor">setHeadColor</a></li><li><a href="global.html#showLost">showLost</a></li><li><a href="global.html#showProgress">showProgress</a></li><li><a href="global.html#showWon">showWon</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#updateHead">updateHead</a></li><li><a href="global.html#updateStats">updateStats</a></li><li><a href="global.html#willUndulateOverItself">willUndulateOverItself</a></li><li><a href="global.html#won">won</a></li><li><a href="global.html#writeText">writeText</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 02 2019 22:10:13 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
