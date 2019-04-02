@@ -2,6 +2,11 @@ var graphics = (function() {
 
     var canvas;
 
+    /**
+     * @function init
+     * @description Vraagt het canvaselement op uit de DOM en wijst deze toe
+     * aan een variabele voor hergebruik.
+     */
     function init() {
         if (!canvas) {
             canvas = $("#mySnakeCanvas");

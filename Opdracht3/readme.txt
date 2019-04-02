@@ -3,22 +3,23 @@ Opdracht 3:
 
 *** Verantwoordelijkheden ***
 
-De functionaliteit is verdeeld over 4 bestanden, welke ieder een module bevatten. Zie voor de publieke api's
-de afbeelding 'klassendiagram.jpg' in de root folder.
+De functionaliteit is verdeeld over 5 bestanden, waarvan de eerste 4 ieder een module bevatten.
+Zie voor de publieke api's de afbeelding 'klassendiagram.jpg' in de root folder.
 
-1. snake-control.js: vangt de besturing van de gebruiker op en zet deze om in opdrachten voor de business logic.
-   In dit bestand wordt ook e.e.a geinitialiseerd 'on document ready'.
+1. snake-control.js (Module): vangt de besturing van de gebruiker op en zet deze om in opdrachten voor de business logic.
 
-2. snake-logic.js: bevat de business logic van het spel, hierin worden beslissingen genomen. Deze module stuurt
+2. snake-logic.js (Module): bevat de business logic van het spel, hierin worden beslissingen genomen. Deze module stuurt
    ook de graphics- en persistence modules aan.
 
-3. snake-persistence.js: houdt de huidige score bij en biedt de mogelijkheid om deze score naar de server
+3. snake-persistence.js (Module): houdt de huidige score bij en biedt de mogelijkheid om deze score naar de server
    te uploaden. Daarnaast kunnen de totaalscores van de server worden opgehaald, welke vervolgens door
    de graphics-module kunnen worden weergegeven.
 
-4. snake-graphics.js: heeft de taak om op het canvas te tekenen en de visuele representatie van de huidige
+4. snake-graphics.js (Module): heeft de taak om op het canvas te tekenen en de visuele representatie van de huidige
    en op de server opgeslagen scores weer te geven. Na winst of verlies wordt er 'gewonnen' of 'verloren'
    weergegeven op het speelveld.
+
+5. snake-init.js: geen module, maar in dit bestand wordt e.e.a geinitialiseerd 'on document ready'.
 
 
 *** Afhankelijkheden ***
@@ -29,8 +30,8 @@ Zie de afhankelijkheden in de afbeelding 'klassendiagram.jpg' in de root folder.
 2. snake-logic.js is afhankelijk van snake-persistence.js en snake-graphics.js (via variabelen 'persistence' en 'graphics'.
 3. snake-persistence is afhankelijk van snake-graphics.js en gebruikt deze via variabele 'graphics'.
 
-Om het spel te initialiseren zodra de html is geladen wordt vanuit snake-control.js (na de module declaratie)
-de code uit 'control' aangeroepen om het spel te kunnen starten.
+Om het spel te initialiseren zodra de html is geladen wordt vanuit snake-init.js
+code uit 'control' aangeroepen om het spel te kunnen starten.
 
 
 *** Ajax ***
