@@ -382,6 +382,9 @@ var logic = (function() {
         }
     }
 
+    /**
+     * PUBLIC API
+     */
     return {
         init: init,
         start: start,

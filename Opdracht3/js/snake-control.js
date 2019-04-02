@@ -74,6 +74,9 @@ var control = (function() {
         persistence.load();
     }
 
+    /**
+     * PUBLIC API
+     */
     return {
         init: init,
         start: start,

@@ -133,6 +133,9 @@ var graphics = (function() {
         $("#lostEver").text(lostEver);
     }
 
+    /**
+     * PUBLIC API
+     */
     return {
         init: init,
         clear: clear,

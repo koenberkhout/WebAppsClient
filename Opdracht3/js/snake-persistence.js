@@ -93,6 +93,9 @@ var persistence = (function() {
         graphics.updateStats(won, lost, wonEver, lostEver);
     }
 
+    /**
+     * PUBLIC API
+     */
     return {
         save: save,
         load: load,
