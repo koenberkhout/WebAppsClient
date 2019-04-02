@@ -26,7 +26,7 @@ var logic = (function() {
 
     var snake,
         foods     = [],           // voedsel voor de slang
-        direction = UP,           // de richting, bij begin UP
+        direction,                // de richting, bij begin UP
         snakeTimer;               // slang automatisch laten bewegen
 
 
@@ -39,6 +39,7 @@ var logic = (function() {
     function init() {
         graphics.init();
         snake = undefined;
+        direction = UP;
         foods = [];
         createStartSnake();
         createFoods();
